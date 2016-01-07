@@ -1,11 +1,12 @@
 import React from 'react';
 
 const Html = ({content}) => {
-    console.log(content);
-
     return (
         <html>
-        <body dangerouslySetInnerHTML={{__html: content}}></body>
+        <body>
+            <div id="content" dangerouslySetInnerHTML={{__html: content}}></div>
+            <script src="/bundle.js"></script>
+        </body>
         </html>
     );
 };

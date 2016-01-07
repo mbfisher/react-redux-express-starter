@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Provider } from 'react-redux'
 
 class App extends Component {
     render() {
