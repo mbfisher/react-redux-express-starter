@@ -8,7 +8,9 @@ const debug = require('debug')('server');
 
 const app = express();
 
-app.use(express.static(path.resolve(__dirname, '../dist')));
+app.set('host', process.env.HOST || '0.0.0.0');
+app.set('port', process.env.PORT || 3000);
+
 app.use(express.static(path.resolve(__dirname, '../static')));
 
 function renderPage(content, initialState) {
@@ -35,4 +37,10 @@ app.use(function serverRender(req, res, next) {
     res.send(renderPage(content, store.getState()));
 });
 
-app.listen(process.env.PORT || 3000);
+app.listen(app.get('port'), () => {
+    debug("Server listening on " + app.get('host') + ":" + app.get('port'));
+});
+
+process.on('SIGTERM', () => {
+    app.close();
+});

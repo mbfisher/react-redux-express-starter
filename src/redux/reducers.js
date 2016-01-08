@@ -5,8 +5,12 @@ const initialState = {
     greeting: 'Welcome!'
 };
 
-function reducer(state = initialState, action) {
+function reducer(state, action) {
     debug('Received action', action);
+
+    if (state === undefined) {
+        return initialState;
+    }
 
     switch (action.type) {
         case GREETING:
