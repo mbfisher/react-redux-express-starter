@@ -6,7 +6,6 @@ import { greet } from '../redux/actions';
 class App extends Component {
     render() {
         const { dispatch } = this.props;
-
         return <Greeting greeting={this.props.greeting} onSayHello={() => dispatch(greet('Hello!'))}/>;
     }
 }
@@ -15,10 +14,9 @@ function select(state) {
     return state;
 }
 
-App = connect(select)(App);
-
-App.create = (store) => {
-    return <Provider store={store}><App/></Provider>;
+App.connect = (store) => {
+    let ConnectedApp = connect(select)(App);
+    return <Provider store={store}><ConnectedApp/></Provider>;
 };
 
 export default App;

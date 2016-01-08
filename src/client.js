@@ -8,4 +8,4 @@ require('debug').enable('*');
 
 const store = createStore(window.__INITIAL_STATE__);
 
-render(App.create(store), document.getElementById('app'));
+render(App.connect(store), document.getElementById('app'));

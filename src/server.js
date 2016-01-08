@@ -31,7 +31,7 @@ function renderPage(content, initialState) {
 
 app.use(function serverRender(req, res, next) {
     const store = createStore();
-    const content = renderToString(App.create(store));
+    const content = renderToString(App.connect(store));
     res.send(renderPage(content, store.getState()));
 });
 
