@@ -11,14 +11,15 @@ class App extends Component {
 }
 
 function select(state) {
-    return state;
+    return state.app;
 }
 
 App.connect = (store) => {
-    let ConnectedApp = connect(select)(App);
-    return <Provider store={store}><ConnectedApp/></Provider>;
+    const ConnectedApp = connect(select)(App);
+
+    return () => {
+        return <Provider store={store}><ConnectedApp/></Provider>;
+    };
 };
 
 export default App;
-
-

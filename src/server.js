@@ -3,7 +3,10 @@ import path from 'path';
 import App from './containers/App';
 import { renderToString } from 'react-dom/server';
 import createStore from './redux/createStore';
+import createRoutes from './createRoutes';
 import React from 'react';
+import { match, RouterContext } from 'react-router'
+import createMemoryHistory from 'history/lib/createMemoryHistory';
 const debug = require('debug')('server');
 
 const app = express();
@@ -18,7 +21,7 @@ function renderPage(content, initialState) {
     <!doctype html>
     <html>
       <head>
-        <title>Redux Universal Example</title>
+        <title>React Starter</title>
       </head>
       <body>
         <div id="app">${content}</div>
@@ -31,10 +34,23 @@ function renderPage(content, initialState) {
    `
 }
 
+const history = createMemoryHistory();
+const store = createStore(history);
+const routes = createRoutes(store, history);
+
 app.use(function serverRender(req, res, next) {
-    const store = createStore();
-    const content = renderToString(App.connect(store));
-    res.send(renderPage(content, store.getState()));
+    match({ routes, location: req.url }, (error, redirectLocation, renderProps) => {
+        if (error) {
+            res.status(500).send(error.message)
+        } else if (redirectLocation) {
+            res.redirect(302, redirectLocation.pathname + redirectLocation.search)
+        } else if (renderProps) {
+            const content = renderToString(<RouterContext {...renderProps} />);
+            res.status(200).send(renderPage(content, store.getState()))
+        } else {
+            res.status(404).send('Not found')
+        }
+    });
 });
 
 app.listen(app.get('port'), () => {

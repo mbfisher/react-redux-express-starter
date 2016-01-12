@@ -1,5 +1,6 @@
-import { createStore as createReduxStore, applyMiddleware } from 'redux';
-import reducer from './reducers';
+import { createStore as createReduxStore, applyMiddleware, combineReducers } from 'redux';
+import reducers from './reducers';
+import { syncReduxAndRouter, routeReducer } from 'redux-simple-router'
 const debug = require('debug')('createStore');
 
 const logger = store => {
@@ -15,10 +16,19 @@ const logger = store => {
     };
 };
 
-const createStoreWithMiddleware = applyMiddleware(logger)(createReduxStore);
 
-const createStore = (initialState) => {
-    return createStoreWithMiddleware(reducer, initialState);
+const createStore = (history, initialState) => {
+    const createStoreWithMiddleware = applyMiddleware(logger)(createReduxStore);
+
+    const reducer = combineReducers({...reducers,
+        routing: routeReducer
+    });
+
+    const store = createStoreWithMiddleware(reducer, initialState);
+
+    syncReduxAndRouter(history, store);
+
+    return store;
 };
 
 export default createStore;
